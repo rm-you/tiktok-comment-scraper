@@ -39,6 +39,9 @@ VIDEOS = [
 
 
 async def get_replies(comment):
+    # There is a bug in the library as of version 6.5.2
+    # See: https://github.com/davidteather/TikTok-Api/issues/1181
+    # Applied fix in the library in comments.py
     replies = {}
     async for reply in comment.replies(count=10000):
         if reply.id in replies:

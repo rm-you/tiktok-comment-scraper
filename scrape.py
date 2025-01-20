@@ -1,10 +1,14 @@
 import asyncio
+import configparser
 import datetime
 import io
 
 from TikTokApi import TikTokApi
 
-TOKEN = "MS_TOKEN_HERE"
+CONFIG = configparser.ConfigParser()
+CONFIG.read("config.ini")
+TOKEN = CONFIG.get("DEFAULT", "ms_token")
+
 VIDEOS = [
     '7389708877756943646',
     '7314510966987689246',
@@ -41,7 +45,7 @@ VIDEOS = [
 async def get_replies(comment):
     # There is a bug in the library as of version 6.5.2
     # See: https://github.com/davidteather/TikTok-Api/issues/1181
-    # Applied fix in the library in comments.py
+    comment.author.user_id = comment.as_dict["aweme_id"]
     replies = {}
     async for reply in comment.replies(count=10000):
         if reply.id in replies:
@@ -71,6 +75,7 @@ async def get_comments(video, comments):
 
 async def get_all_comments(video_id: int):
     async with TikTokApi() as api:
+        # await api.create_sessions(num_sessions=1, sleep_after=5, browser="firefox")
         await api.create_sessions(ms_tokens=[TOKEN], num_sessions=1, sleep_after=3, browser="firefox")
         video = api.video(id=video_id)
         comments = {}

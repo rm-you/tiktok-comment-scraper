@@ -1,2 +1,3 @@
 [DEFAULT]
 ms_token =
+max_comments = 10000
